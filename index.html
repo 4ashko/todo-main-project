@@ -12,43 +12,55 @@
     <ul id="taskList"></ul>
 
     <script>
-        // Load tasks from localStorage
-        const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    // Load tasks from localStorage
+    const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 
-        function renderTasks() {
-            const list = document.getElementById("taskList");
-            list.innerHTML = "";
-            tasks.forEach((task, index) => {
-                const li = document.createElement("li");
-                li.textContent = task.text;
-                if (task.completed) li.style.textDecoration = "line-through";
+    function renderTasks() {
+        const list = document.getElementById("taskList");
+        list.innerHTML = "";
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+            li.textContent = task.text;
+            if (task.completed) li.style.textDecoration = "line-through";
 
-                li.onclick = () => {
-                    tasks[index].completed = !tasks[index].completed;
-                    saveTasks();
-                    renderTasks();
-                }
+            // Toggle completed
+            li.onclick = () => {
+                tasks[index].completed = !tasks[index].completed;
+                saveTasks();
+                renderTasks();
+            };
 
-                list.appendChild(li);
-            });
-        }
+            // Delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation(); // prevent toggle
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+            };
 
-        function saveTasks() {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        }
+            li.appendChild(deleteBtn);
+            list.appendChild(li);
+        });
+    }
 
-        function addTask() {
-            const input = document.getElementById("taskInput");
-            const taskText = input.value.trim();
-            if (!taskText) return;
+    function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
 
-            tasks.push({ text: taskText, completed: false });
-            saveTasks();
-            renderTasks();
-            input.value = "";
-        }
+    function addTask() {
+        const input = document.getElementById("taskInput");
+        const taskText = input.value.trim();
+        if (!taskText) return;
 
+        tasks.push({ text: taskText, completed: false });
+        saveTasks();
         renderTasks();
+        input.value = "";
+    }
+
+    renderTasks();
     </script>
 </body>
 </html>
