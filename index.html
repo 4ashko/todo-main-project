@@ -8,6 +8,9 @@
 
     <input type="text" id="taskInput" placeholder="Enter a task">
     <button onclick="addTask()">Add</button>
+    <button onclick="setFilter('all')">All</button>
+    <button onclick="setFilter('active')">Active</button>
+    <button onclick="setFilter('completed')">Completed</button>
 
     <div>
         <button onclick="setFilter('all')">All</button>
@@ -27,28 +30,52 @@
         renderTasks();
     }
 
+    let currentFilter = "all";
+
     function renderTasks() {
         const list = document.getElementById("taskList");
         list.innerHTML = "";
+<<<<<<< HEAD
         tasks.forEach((task, index) => {
             if (currentFilter === "active" && task.completed) return;
             if (currentFilter === "completed" && !task.completed) return;
 
+=======
+
+        let filteredTasks = tasks;
+
+        if (currentFilter === "active") {
+            filteredTasks = tasks.filter(task => !task.completed);
+        }
+
+        if (currentFilter === "completed") {
+            filteredTasks = tasks.filter(task => task.completed);
+        }
+
+        filteredTasks.forEach((task, index) => {
+>>>>>>> New filter
             const li = document.createElement("li");
             li.textContent = task.text;
+
             if (task.completed) li.style.textDecoration = "line-through";
 
             li.onclick = () => {
-                tasks[index].completed = !tasks[index].completed;
+                task.completed = !task.completed;
                 saveTasks();
                 renderTasks();
             };
 
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "Delete";
+
             deleteBtn.onclick = (e) => {
                 e.stopPropagation();
+<<<<<<< HEAD
                 tasks.splice(index, 1);
+=======
+                const realIndex = tasks.indexOf(task);
+                tasks.splice(realIndex, 1);
+>>>>>>> New filter
                 saveTasks();
                 renderTasks();
             };
@@ -72,6 +99,13 @@
         renderTasks();
         input.value = "";
     }
+
+    
+
+    function setFilter(filter) {
+        currentFilter = filter;
+        renderTasks();
+    }   
 
     renderTasks();
     </script>
