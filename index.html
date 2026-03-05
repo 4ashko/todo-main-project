@@ -9,32 +9,45 @@
     <input type="text" id="taskInput" placeholder="Enter a task">
     <button onclick="addTask()">Add</button>
 
+    <div>
+        <button onclick="setFilter('all')">All</button>
+        <button onclick="setFilter('active')">Active</button>
+        <button onclick="setFilter('completed')">Completed</button>
+    </div>
+
     <ul id="taskList"></ul>
 
     <script>
     // Load tasks from localStorage
     const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    let currentFilter = "all";
+
+    function setFilter(filter) {
+        currentFilter = filter;
+        renderTasks();
+    }
 
     function renderTasks() {
         const list = document.getElementById("taskList");
         list.innerHTML = "";
         tasks.forEach((task, index) => {
+            if (currentFilter === "active" && task.completed) return;
+            if (currentFilter === "completed" && !task.completed) return;
+
             const li = document.createElement("li");
             li.textContent = task.text;
             if (task.completed) li.style.textDecoration = "line-through";
 
-            // Toggle completed
             li.onclick = () => {
                 tasks[index].completed = !tasks[index].completed;
                 saveTasks();
                 renderTasks();
             };
 
-            // Delete button
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "Delete";
             deleteBtn.onclick = (e) => {
-                e.stopPropagation(); // prevent toggle
+                e.stopPropagation();
                 tasks.splice(index, 1);
                 saveTasks();
                 renderTasks();
